@@ -9,6 +9,12 @@ router.get('/login', function(req, res) {
     res.render('login', { message: "This is the message" });
 });
 
+router.post('/login', passport.authenticate('local', {
+    successReturnToOrRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+}));
+
 router.get('/dialog/authorize',
     login.ensureLoggedIn(),
     server.authorize(function(clientID, redirectURI, done) {

@@ -5,4 +5,13 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     block content
-    h1 This is the Login Page
+    h1 Login
+    form(name="login", action="/login", method="post")
+      div.input
+        span.label Email
+        input(type="text", name="email")
+      div.input
+        span.label Password
+        input(type="password", name="password")
+      div.input
+        input(type="submit", name="submit")
