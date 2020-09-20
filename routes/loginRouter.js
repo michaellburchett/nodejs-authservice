@@ -11,8 +11,7 @@ router.get('/login', function(req, res) {
 
 router.post('/login', passport.authenticate('local', {
     successReturnToOrRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true
+    failureRedirect: '/login'
 }));
 
 router.get('/dialog/authorize',
