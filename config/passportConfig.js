@@ -13,13 +13,13 @@ const BearerStrategy = require('passport-http-bearer').Strategy;
  * Anytime a request is made to authorize an application, we must ensure that
  * a user is logged in before asking them to approve the request.
  */
-passport.use(new LocalStrategy(
+passport.use('local', new LocalStrategy(
     (username, password, done) => {
         console.log('I get here');
 
-        var user = {username: "bill", pasword: "secret"};
+        var user = {id: 1, username: "bill", password: "secret"};
 
-        done(null, user);
+        return done(null, user);
         //Find a user and 'return done(null, user);'
 
         // db.users.findByUsername(username, (error, user) => {
@@ -37,6 +37,9 @@ passport.deserializeUser((id, done) => {
     // Find User by id then 'return done(error, user)'
 
     // db.users.findById(id, (error, user) => done(error, user));
+    var user = {id: 1, username: "bill", password: "secret"};
+
+    return done(null, user);
 });
 
 /**
@@ -60,9 +63,7 @@ function verifyClient(clientId, clientSecret, done) {
     //     return done(null, client);
     // });
 }
-
 passport.use(new BasicStrategy(verifyClient));
-
 passport.use(new ClientPasswordStrategy(verifyClient));
 
 /**

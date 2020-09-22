@@ -6,12 +6,13 @@ const login = require('connect-ensure-login');
 const server = oauth2orize.createServer();
 
 router.get('/login', function(req, res) {
-    res.render('login', { message: "This is the message" });
+    res.render('login', { message: req.flash('message')[0] });
 });
 
 router.post('/login', passport.authenticate('local', {
     successReturnToOrRedirect: '/',
-    failureRedirect: '/login'
+    failureRedirect: '/login',
+    failureFlash: true
 }));
 
 router.get('/dialog/authorize',
