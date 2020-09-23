@@ -15,7 +15,6 @@ const BearerStrategy = require('passport-http-bearer').Strategy;
  */
 passport.use('local', new LocalStrategy(
     (username, password, done) => {
-        console.log('I get here');
 
         var user = {id: 1, username: "bill", password: "secret"};
 

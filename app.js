@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const flash = require("connect-flash");
+const passport = require('passport');
 
 const app = express();
 
@@ -27,6 +28,8 @@ app.use(bodyParser.json({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({ secret: 'correct horse battery staple', resave: false, saveUninitialized: false }));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/', loginRouter);
