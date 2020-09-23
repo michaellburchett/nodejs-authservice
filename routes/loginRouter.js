@@ -5,6 +5,18 @@ const oauth2orize = require('oauth2orize');
 const login = require('connect-ensure-login');
 const server = oauth2orize.createServer();
 
+//oauth2orize Config
+server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done) => {
+    return done(null, 'the_code');
+}));
+//
+server.serializeClient(function(client, done) {
+    return done(null, 'the_client_id');
+});
+server.deserializeClient(function(id, done) {
+    return done(null, 'the_client');
+});
+
 router.get('/login', function(req, res) {
     res.render('login', { message: req.flash('message')[0] });
 });
@@ -26,6 +38,7 @@ router.get('/dialog/authorize',
         //     if (client.redirectUri != redirectURI) { return done(null, false); }
         //     return done(null, client, client.redirectURI);
         // });
+        return done(null, 'the_client', 'https://www.google.com');
     }),
     function(req, res) {
         res.render('dialog', {
@@ -34,6 +47,11 @@ router.get('/dialog/authorize',
             client: req.oauth2.client
         });
     });
+
+router.post('/dialog/authorize/decision',
+    login.ensureLoggedIn(),
+    server.decision()
+);
 
 router.post('/dialog/authorize/decision',
     login.ensureLoggedIn(),

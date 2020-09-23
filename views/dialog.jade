@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    block content
+    h1 Dialog
+    p(class="hello") hello, #{client.name} is requesting access to your account.
+    p Do you approve?
+    span #{message}
+    form(name="decision", action="/dialog/authorize/decision", method="post")
+      input(name="transaction_id" type="hidden" value=transactionID )
+      div.input
+        input(type="submit" value="Allow" name ="accept" id="allow")
+      div.input
+        input(type="submit" value="Deny" name="cancel" id="deny")
