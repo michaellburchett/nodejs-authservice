@@ -6,6 +6,8 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
+const User = require('../models/User.js');
+
 /**
  * LocalStrategy
  *
@@ -13,30 +15,28 @@ const BearerStrategy = require('passport-http-bearer').Strategy;
  * Anytime a request is made to authorize an application, we must ensure that
  * a user is logged in before asking them to approve the request.
  */
-passport.use('local', new LocalStrategy(
-    (username, password, done) => {
+passport.use('local', new LocalStrategy({
+        usernameField : "email",
+        passReqToCallback: true
+    },
+    async (req, email, password, done) => {
 
-        var user = {id: 1, username: "bill", password: "secret"};
+        const user = (await User.findOne({where: {email: email}})).dataValues;//catch errors
+        if(!user) return done(null, false, req.flash('message', 'Sorry, incorrect credentials.'));
 
-        return done(null, user);
-        //Find a user and 'return done(null, user);'
+        if(user.password === password) {
+            return done(null, user);
+        } else {
+            return done(null, false, req.flash('message', 'Sorry, incorrect credentials.'));
+        }
 
-        // db.users.findByUsername(username, (error, user) => {
-        //     if (error) return done(error);
-        //     if (!user) return done(null, false);
-        //     if (user.password !== password) return done(null, false);
-        //     return done(null, user);
-        // });
     }
 ));
 
 passport.serializeUser((user, done) =>  done(null, user.id));
 
-passport.deserializeUser((id, done) => {
-    // Find User by id then 'return done(error, user)'
-
-    // db.users.findById(id, (error, user) => done(error, user));
-    var user = {id: 1, username: "bill", password: "secret"};
+passport.deserializeUser(async (id, done) => {
+    const user = (await User.findByPk(id)).dataValues;
 
     return done(null, user);
 });
