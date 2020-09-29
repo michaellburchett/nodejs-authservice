@@ -7,6 +7,7 @@ const ClientPasswordStrategy = require('passport-oauth2-client-password').Strate
 const BearerStrategy = require('passport-http-bearer').Strategy;
 
 const User = require('../models/User.js');
+const Client = require('../models/Client.js');
 
 /**
  * LocalStrategy
@@ -52,15 +53,13 @@ passport.deserializeUser(async (id, done) => {
  * to the `Authorization` header). While this approach is not recommended by
  * the specification, in practice it is quite common.
  */
-function verifyClient(clientId, clientSecret, done) {
-    //Find a client and 'return done(null, client);'
+async function verifyClient(clientId, clientSecret, done) {
+    const client = (await Client.findOne({where: {
+        clientId: clientId,
+        clientSecret: clientSecret
+    }})).dataValues;
 
-    // db.clients.findByClientId(clientId, (error, client) => {
-    //     if (error) return done(error);
-    //     if (!client) return done(null, false);
-    //     if (client.clientSecret !== clientSecret) return done(null, false);
-    //     return done(null, client);
-    // });
+    return done(null, client);
 }
 passport.use(new BasicStrategy(verifyClient));
 passport.use(new ClientPasswordStrategy(verifyClient));

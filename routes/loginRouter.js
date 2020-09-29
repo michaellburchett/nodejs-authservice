@@ -5,16 +5,36 @@ const oauth2orize = require('oauth2orize');
 const login = require('connect-ensure-login');
 const server = oauth2orize.createServer();
 
-//oauth2orize Config
+const Client = require('../models/Client.js');
+const AuthorizationCode = require('../models/AuthorizationCode.js');
+
+
 server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done) => {
-    return done(null, 'the_code');
+    const code = '123142342342134234214244123';
+
+    const authorizationCode = await AuthorizationCode.create({
+        code: code,
+        client_id: client.clientId,
+        redirectURI: redirectURI,
+        ares_scope: JSON.stringify(ares),
+        user_id: user.id
+    });
+
+    return done(null, authorizationCode.code);
 }));
-//
-server.serializeClient(function(client, done) {
-    return done(null, 'the_client_id');
+
+server.serializeClient(async function(client, done) {
+    const unserialized_client = (await Client.findOne({where: {
+            clientId: clientId,
+            clientSecret: clientSecret
+        }})).dataValues;
+
+    return done(null, unserialized_client.id);
 });
-server.deserializeClient(function(id, done) {
-    return done(null, 'the_client');
+server.deserializeClient(async function(id, done) {
+    const client = (await Client.findByPk(id)).dataValues;
+
+    return done(null, client);
 });
 
 router.get('/login', function(req, res) {
@@ -29,16 +49,10 @@ router.post('/login', passport.authenticate('local', {
 
 router.get('/dialog/authorize',
     login.ensureLoggedIn(),
-    server.authorize(function(clientID, redirectURI, done) {
-        //Find the client and 'return done(null, client, client.redirectURI);'
+    server.authorize(async function(clientID, redirectURI, done) {
+        const client = (await Client.findOne({where: { clientId: clientID }})).dataValues;
 
-        // Clients.findOne(clientID, function(err, client) {
-        //     if (err) { return done(err); }
-        //     if (!client) { return done(null, false); }
-        //     if (client.redirectUri != redirectURI) { return done(null, false); }
-        //     return done(null, client, client.redirectURI);
-        // });
-        return done(null, 'the_client', 'https://www.google.com');
+        return done(null, client, client.redirectURI);
     }),
     function(req, res) {
         res.render('dialog', {
