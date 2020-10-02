@@ -10,14 +10,15 @@ const AuthorizationCode = require('../models/AuthorizationCode.js');
 
 
 server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done) => {
-    const code = '123142342342134234214244123';
+    const code = '1231423423421342342142444123';
 
     const authorizationCode = await AuthorizationCode.create({
+        userId: user.id,
+        clientId: client.id,
         code: code,
         client_id: client.clientId,
         redirectURI: redirectURI,
-        ares_scope: JSON.stringify(ares),
-        user_id: user.id
+        ares_scope: JSON.stringify(ares)
     });
 
     return done(null, authorizationCode.code);
@@ -25,8 +26,8 @@ server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done
 
 server.serializeClient(async function(client, done) {
     const unserialized_client = (await Client.findOne({where: {
-            clientId: clientId,
-            clientSecret: clientSecret
+            clientId: client.clientId,
+            clientSecret: client.clientSecret
         }})).dataValues;
 
     return done(null, unserialized_client.id);

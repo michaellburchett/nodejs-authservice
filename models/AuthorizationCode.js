@@ -1,6 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const User = require('User.js');
-const Client = require('Client.js');
+const { Sequelize, DataTypes, Model } = require('sequelize');
 
 const sequelize = new Sequelize(
     'auth',
@@ -12,24 +10,28 @@ const sequelize = new Sequelize(
         }
     );
 
-const AuthorizationCode = sequelize.define('AuthorizationCode', {
-    code: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    redirectURI: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    ares_scope: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
-}, {
-    // Other model options go here
-});
+class AuthorizationCode extends Model {}
+AuthorizationCode.init({
+    code: Sequelize.STRING,
+    redirectURI: Sequelize.STRING,
+    ares_scope: Sequelize.STRING
+}, { sequelize, modelName: 'AuthorizationCode' });
 
-AuthorizationCode.belongsTo(User);
-AuthorizationCode.belongsTo(Client);
+// const AuthorizationCode = sequelize.define('AuthorizationCode', {
+//     code: {
+//         type: DataTypes.STRING,
+//         allowNull: false
+//     },
+//     redirectURI: {
+//         type: DataTypes.STRING,
+//         allowNull: false
+//     },
+//     ares_scope: {
+//         type: DataTypes.STRING,
+//         allowNull: false
+//     }
+// }, {
+//     // Other model options go here
+// });
 
 module.exports = AuthorizationCode;

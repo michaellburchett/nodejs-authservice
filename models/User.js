@@ -30,6 +30,4 @@ User.init({
 //     // Other model options go here
 // });
 
-User.belongsToMany(Client, { through: 'User_Clients' });
-
 module.exports = User;
