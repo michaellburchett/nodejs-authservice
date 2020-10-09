@@ -12,26 +12,11 @@ const sequelize = new Sequelize(
 
 class AuthorizationCode extends Model {}
 AuthorizationCode.init({
+    userId: Sequelize.INTEGER,
+    clientId: Sequelize.INTEGER,
     code: Sequelize.STRING,
     redirectURI: Sequelize.STRING,
     ares_scope: Sequelize.STRING
 }, { sequelize, modelName: 'AuthorizationCode' });
-
-// const AuthorizationCode = sequelize.define('AuthorizationCode', {
-//     code: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     redirectURI: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     ares_scope: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     }
-// }, {
-//     // Other model options go here
-// });
 
 module.exports = AuthorizationCode;

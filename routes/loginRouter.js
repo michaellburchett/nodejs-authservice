@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const oauth2orize = require('oauth2orize');
 const login = require('connect-ensure-login');
+const cryptoRandomString = require('crypto-random-string');
 const server = oauth2orize.createServer();
 
 const Client = require('../models/Client.js');
@@ -10,7 +11,7 @@ const AuthorizationCode = require('../models/AuthorizationCode.js');
 
 
 server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done) => {
-    const code = '1231423423421342342142444123';
+    const code = cryptoRandomString({length: 100, type: 'base64'});;
 
     const authorizationCode = await AuthorizationCode.create({
         userId: user.id,
@@ -26,9 +27,9 @@ server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done
 
 server.serializeClient(async function(client, done) {
     const unserialized_client = (await Client.findOne({where: {
-            clientId: client.clientId,
-            clientSecret: client.clientSecret
-        }})).dataValues;
+        clientId: client.clientId,
+        clientSecret: client.clientSecret
+    }})).dataValues;
 
     return done(null, unserialized_client.id);
 });

@@ -20,29 +20,4 @@ Client.init({
     redirectURI: Sequelize.STRING,
 }, { sequelize, modelName: 'Client' });
 
-// const Client = sequelize.define('Client', {
-//     name: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     clientId: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     clientSecret: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     isTrusted: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     redirectURI: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     }
-// }, {
-//     // Other model options go here
-// });
-
 module.exports = Client;

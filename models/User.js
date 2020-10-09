@@ -17,17 +17,4 @@ User.init({
     password: Sequelize.STRING
 }, { sequelize, modelName: 'User' });
 
-// const User = sequelize.define('User', {
-//     email: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     password: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     }
-// }, {
-//     // Other model options go here
-// });
-
 module.exports = User;

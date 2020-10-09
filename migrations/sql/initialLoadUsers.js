@@ -8,8 +8,15 @@ module.exports = {
                 autoIncrement: true,
                 primaryKey: true
             },
-            email: Sequelize.STRING,
-            password: Sequelize.STRING,
+            email: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                unique: true
+            },
+            password: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
             createdAt: Sequelize.DATE,
             updatedAt: Sequelize.DATE
         });

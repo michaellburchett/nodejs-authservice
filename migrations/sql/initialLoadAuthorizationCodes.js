@@ -8,11 +8,27 @@ module.exports = {
                 autoIncrement: true,
                 primaryKey: true
             },
-            userId: Sequelize.INTEGER,
-            clientId: Sequelize.INTEGER,
-            code: Sequelize.STRING,
-            redirectURI: Sequelize.STRING,
-            ares_scope: Sequelize.STRING,
+            userId: {
+                type: Sequelize.INTEGER,
+                allowNull: false
+            },
+            clientId: {
+                type: Sequelize.INTEGER,
+                allowNull: false
+            },
+            code: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                unique: true
+            },
+            redirectURI: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            ares_scope: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
             createdAt: Sequelize.DATE,
             updatedAt: Sequelize.DATE
         });

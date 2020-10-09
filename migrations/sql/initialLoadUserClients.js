@@ -8,8 +8,14 @@ module.exports = {
                 autoIncrement: true,
                 primaryKey: true
             },
-            userId: Sequelize.STRING,
-            clientId: Sequelize.STRING
+            userId: {
+                type: Sequelize.INTEGER,
+                allowNull: false
+            },
+            clientId: {
+                type: Sequelize.INTEGER,
+                allowNull: false
+            },
         });
     },
     down: (queryInterface, Sequelize) => {

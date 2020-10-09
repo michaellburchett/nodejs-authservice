@@ -15,8 +15,6 @@ const indexRouter = require('./routes/index');
 const loginRouter = require('./routes/loginRouter');
 const usersRouter = require('./routes/users');
 
-const associations = require('./models/associations.js')();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

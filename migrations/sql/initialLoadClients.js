@@ -8,11 +8,27 @@ module.exports = {
                 autoIncrement: true,
                 primaryKey: true
             },
-            name: Sequelize.STRING,
-            clientId: Sequelize.STRING,
-            clientSecret: Sequelize.STRING,
-            isTrusted: Sequelize.STRING,
-            redirectURI: Sequelize.STRING,
+            name: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            clientId: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                unique: true
+            },
+            clientSecret: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            isTrusted: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            redirectURI: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
             createdAt: Sequelize.DATE,
             updatedAt: Sequelize.DATE
         });
