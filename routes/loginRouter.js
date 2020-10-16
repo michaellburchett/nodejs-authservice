@@ -8,10 +8,11 @@ const server = oauth2orize.createServer();
 
 const Client = require('../models/Client.js');
 const AuthorizationCode = require('../models/AuthorizationCode.js');
+const AccessToken = require('../models/AccessToken.js');
 
 
 server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done) => {
-    const code = cryptoRandomString({length: 100, type: 'base64'});;
+    const code = cryptoRandomString({length: 15, type: 'url-safe'});;
 
     const authorizationCode = await AuthorizationCode.create({
         userId: user.id,
@@ -23,6 +24,26 @@ server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done
     });
 
     return done(null, authorizationCode.code);
+}));
+
+server.exchange(oauth2orize.exchange.code(async (client, code, redirectUri, done) => {
+    const auth_code = (await AuthorizationCode.findOne({where: {code: code}}));//catch errors
+    if(!auth_code) return done("Sorry, Can't find a token");
+
+    const token = cryptoRandomString({length: 50, type: 'url-safe'});;
+
+    const authorizationCode = await AuthorizationCode.create({
+        userId: user.id,
+        clientId: client.id,
+        code: code,
+        client_id: client.clientId,
+        redirectURI: redirectURI,
+        ares_scope: JSON.stringify(ares)
+    });
+
+    return done(null, authorizationCode.code);
+
+    return done(null, token.dataValues);
 }));
 
 server.serializeClient(async function(client, done) {
@@ -73,7 +94,7 @@ router.post('/dialog/authorize/decision',
     login.ensureLoggedIn(),
     server.decision());
 
-router.post('/token',
+router.post('/oauth/token',
     passport.authenticate(['basic', 'oauth2-client-password'], { session: false }),
     server.token(),
     server.errorHandler());

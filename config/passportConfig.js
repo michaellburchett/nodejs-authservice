@@ -8,6 +8,7 @@ const BearerStrategy = require('passport-http-bearer').Strategy;
 
 const User = require('../models/User.js');
 const Client = require('../models/Client.js');
+const AuthorizationCode = require('../models/AuthorizationCode.js');
 
 /**
  * LocalStrategy
@@ -74,6 +75,7 @@ passport.use(new ClientPasswordStrategy(verifyClient));
  */
 passport.use(new BearerStrategy(
     (accessToken, done) => {
+
         //Find user by Token then 'done(null, user, { scope: '*' });'
         //Or if no user, find client by Token then 'done(null, client, { scope: '*' });'
 
