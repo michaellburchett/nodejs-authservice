@@ -18,7 +18,6 @@ server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done
         userId: user.id,
         clientId: client.id,
         code: code,
-        client_id: client.clientId,
         redirectURI: redirectURI,
         ares_scope: JSON.stringify(ares)
     });
@@ -27,23 +26,22 @@ server.grant(oauth2orize.grant.code(async (client, redirectURI, user, ares, done
 }));
 
 server.exchange(oauth2orize.exchange.code(async (client, code, redirectUri, done) => {
+
     const auth_code = (await AuthorizationCode.findOne({where: {code: code}}));//catch errors
     if(!auth_code) return done("Sorry, Can't find a token");
 
     const token = cryptoRandomString({length: 50, type: 'url-safe'});;
 
-    const authorizationCode = await AuthorizationCode.create({
-        userId: user.id,
+    const accessToken = await AccessToken.create({
+        userId: auth_code.userId,
         clientId: client.id,
-        code: code,
-        client_id: client.clientId,
-        redirectURI: redirectURI,
-        ares_scope: JSON.stringify(ares)
+        authorizationCodeId: auth_code.id,
+        token: token,
+        type: "bearerStrategy",
+        expirationDate: 1
     });
 
-    return done(null, authorizationCode.code);
-
-    return done(null, token.dataValues);
+    return done(null, accessToken.dataValues);
 }));
 
 server.serializeClient(async function(client, done) {

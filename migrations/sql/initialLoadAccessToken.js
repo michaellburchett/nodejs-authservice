@@ -2,7 +2,7 @@
 
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('authorizationcodes', {
+        return queryInterface.createTable('accesstokens', {
             id: {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
@@ -38,6 +38,6 @@ module.exports = {
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('authorizationcodes');
+        return queryInterface.dropTable('accesstokens');
     }
   };
