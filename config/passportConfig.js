@@ -9,6 +9,7 @@ const BearerStrategy = require('passport-http-bearer').Strategy;
 const User = require('../models/User.js');
 const Client = require('../models/Client.js');
 const AuthorizationCode = require('../models/AuthorizationCode.js');
+const AccessToken = require('../models/AccessToken.js');
 
 /**
  * LocalStrategy
@@ -74,34 +75,42 @@ passport.use(new ClientPasswordStrategy(verifyClient));
  * the authorizing user.
  */
 passport.use(new BearerStrategy(
-    (accessToken, done) => {
+    async (accessToken, done) => {
 
-        //Find user by Token then 'done(null, user, { scope: '*' });'
-        //Or if no user, find client by Token then 'done(null, client, { scope: '*' });'
+//This is incorrect...FIND not CREATE. But where do I create?
+//         const token = cryptoRandomString({length: 15, type: 'url-safe'});
+//
+//         const at = await AccessToken.create({
+//             userId: user.id,
+//             clientId: client.id,
+//             authorizationCodeId: 1,
+//             token: token,
+//             type: "bearerStrategy",
+//             expirationDate: 1
+//         });
 
-        // db.accessTokens.find(accessToken, (error, token) => {
-        //     if (error) return done(error);
-        //     if (!token) return done(null, false);
-        //     if (token.userId) {
-        //         db.users.findById(token.userId, (error, user) => {
-        //             if (error) return done(error);
-        //             if (!user) return done(null, false);
-        //             // To keep this example simple, restricted scopes are not implemented,
-        //             // and this is just for illustrative purposes.
-        //             done(null, user, { scope: '*' });
-        //         });
-        //     } else {
-        //         // The request came from a client only since userId is null,
-        //         // therefore the client is passed back instead of a user.
-        //         db.clients.findByClientId(token.clientId, (error, client) => {
-        //             if (error) return done(error);
-        //             if (!client) return done(null, false);
-        //             // To keep this example simple, restricted scopes are not implemented,
-        //             // and this is just for illustrative purposes.
-        //             done(null, client, { scope: '*' });
-        //         });
-        //     }
-        // });
+        const token = (await AccessToken.findOne({where: { token: accessToken }})).dataValues;
 
+        if(!token) {
+            return done(null, false);
+        }
+
+        if(token.userId) {
+            const user = (await User.findByPk(token.userId)).dataValues;
+
+            if(!user) {
+                return done(null, false);
+            }
+
+            done(null, user, { scope: '*' });
+        } else {
+            const client = (await Client.findByPk(token.clientId)).dataValues;
+
+            if(!client) {
+                return done(null, false);
+            }
+
+            done(null, client, { scope: '*' });
+        }
     }
 ));
