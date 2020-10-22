@@ -30,7 +30,11 @@ server.exchange(oauth2orize.exchange.code(async (client, code, redirectUri, done
     const auth_code = (await AuthorizationCode.findOne({where: {code: code}}));//catch errors
     if(!auth_code) return done("Sorry, Can't find a token");
 
-    const token = cryptoRandomString({length: 50, type: 'url-safe'});;
+    let date = new Date();
+    date.setDate(date.getDate() + 60);
+
+    const token = cryptoRandomString({length: 150, type: 'url-safe'});
+    const refreshtoken = cryptoRandomString({length: 150, type: 'url-safe'});
 
     const accessToken = await AccessToken.create({
         userId: auth_code.userId,
@@ -38,7 +42,8 @@ server.exchange(oauth2orize.exchange.code(async (client, code, redirectUri, done
         authorizationCodeId: auth_code.id,
         token: token,
         type: "bearerStrategy",
-        expirationDate: 1
+        refreshToken: refreshtoken,
+        expirationDate: date
     });
 
     return done(null, accessToken.dataValues);

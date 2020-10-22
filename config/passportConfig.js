@@ -77,21 +77,13 @@ passport.use(new ClientPasswordStrategy(verifyClient));
 passport.use(new BearerStrategy(
     async (accessToken, done) => {
 
-//This is incorrect...FIND not CREATE. But where do I create?
-//         const token = cryptoRandomString({length: 15, type: 'url-safe'});
-//
-//         const at = await AccessToken.create({
-//             userId: user.id,
-//             clientId: client.id,
-//             authorizationCodeId: 1,
-//             token: token,
-//             type: "bearerStrategy",
-//             expirationDate: 1
-//         });
-
         const token = (await AccessToken.findOne({where: { token: accessToken }})).dataValues;
 
         if(!token) {
+            return done(null, false);
+        }
+
+        if(token.expirationDate < (new Date())) {
             return done(null, false);
         }
 

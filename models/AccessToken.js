@@ -1,14 +1,15 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
 
 const sequelize = new Sequelize(
-    'auth',
-    'root',
-    'password', {
-            host: '127.0.0.1',
-            dialect: 'mysql',
-            logging: false
-        }
-    );
+    process.env.DB_TABLE,
+    process.env.DB_USER,
+    process.env.DB_PASS,
+    {
+        host: process.env.DB_HOST,
+        dialect: process.env.DB_DIALECT,
+        logging: false
+    }
+);
 
 class AccessToken extends Model {}
 AccessToken.init({
@@ -17,6 +18,7 @@ AccessToken.init({
     authorizationCodeId: Sequelize.INTEGER,
     token: Sequelize.STRING,
     type: Sequelize.STRING,
+    refreshToken: Sequelize.STRING,
     expirationDate: Sequelize.DATE,
 }, { sequelize, modelName: 'AccessToken' });
 

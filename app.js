@@ -8,7 +8,11 @@ const bodyParser = require('body-parser');
 const flash = require("connect-flash");
 const passport = require('passport');
 
+//Set up app as an Express App
 const app = express();
+
+//Use a .env file
+require('dotenv').config();
 
 require('./config/passportConfig.js');
 const indexRouter = require('./routes/index');
@@ -19,6 +23,7 @@ const usersRouter = require('./routes/users');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+//Various app setup
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -34,6 +39,9 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/', loginRouter);
 app.use('/', usersRouter);
+
+//Application Routes
+require('./routes')(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
