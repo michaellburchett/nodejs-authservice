@@ -41,7 +41,7 @@ app.use('/', loginRouter);
 app.use('/', usersRouter);
 
 //Application Routes
-require('./routes')(app);
+//require('./routes')(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
